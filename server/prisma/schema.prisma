@@ -12,4 +12,16 @@ model User {
   name     String
   email    String @unique
   password String
+
+  snippets Snippet[]
+}
+
+model Snippet {
+  id     String @id @default(uuid())
+  name   String
+  lang   String
+  code   String
+  userId String
+
+  user User @relation(fields: [userId], references: [id])
 }

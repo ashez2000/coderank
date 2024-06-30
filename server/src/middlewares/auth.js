@@ -18,13 +18,3 @@ export const authenticate = (req, res, next) => {
     throw new AppError('Unauthorized', 401)
   }
 }
-
-export const restrictTo = (...roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      throw new AppError('Unauthorized', 403)
-    }
-
-    next()
-  }
-}
