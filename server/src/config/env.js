@@ -10,3 +10,4 @@ const load = (name) => {
 
 export const PORT = load('PORT')
 export const NODE_ENV = load('NODE_ENV')
+export const EVAL_URL = load('EVAL_URL')

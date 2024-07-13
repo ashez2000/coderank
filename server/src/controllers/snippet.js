@@ -1,4 +1,6 @@
 import axios from 'axios'
+
+import * as env from '../config/env.js'
 import db from '../utils/prisma.js'
 
 /**
@@ -109,12 +111,12 @@ export const evalSnippet = async (req, res) => {
   }
 
   try {
-    // TODO: Read URL from env
-    const axiosRes = await axios.post('http://localhost:3001/eval', {
+    const { data } = await axios.post(env.EVAL_URL + '/eval', {
       lang: snippet.lang,
       code: snippet.code,
     })
-    res.status(200).json(axiosRes.data)
+
+    res.status(200).json(data)
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: 'Error evaluating code snippet' })
