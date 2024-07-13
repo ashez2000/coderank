@@ -16,7 +16,7 @@ export const evalSnippet = async (lang, code) => {
 
   const containerConfig = {
     Image: 'python:3.9-slim',
-    Cmd: ['python3', `/code/${codePath}/main.py`],
+    Cmd: ['python3', `/code/main.py`],
     AttachStdout: true,
     AttachStderr: true,
     HostConfig: {
