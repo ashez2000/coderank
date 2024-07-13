@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon ./src/main.js"
+    "start": "node ./src/main.js",
+    "dev": "nodemon ./src/main.js",
+    "db:push": "prisma db push"
   },
   "dependencies": {
     "@prisma/client": "^5.10.2",
