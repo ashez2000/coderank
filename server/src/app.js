@@ -3,6 +3,7 @@ import morgan from 'morgan'
 import 'express-async-errors'
 
 import { errorHandler, notFound } from './middlewares/error.js'
+import snippetRoutes from './routes/snippets.js'
 import authRoutes from './routes/auth.js'
 
 const app = express()
@@ -15,6 +16,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/auth', authRoutes)
+app.use('/api/snippets', snippetRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

@@ -1,6 +1,5 @@
+import axios from 'axios'
 import db from '../utils/prisma.js'
-import { AppError } from '../utils/error.js'
-import * as repo from '../repository/mod.js'
 
 /**
  * Create new snippet
@@ -90,4 +89,34 @@ export const remove = async (req, res) => {
   })
 
   res.status(200).json(snippet)
+}
+
+/**
+ * Evaluate snippet
+ * @route POST /api/snippets/:id
+ */
+export const evalSnippet = async (req, res) => {
+  const userId = req.user.id
+  const snippetId = req.params.id
+
+  const snippet = await db.snippet.findUnique({ where: { id: snippetId } })
+  if (!snippet) {
+    throw new AppError('Snippet Not Found', 404)
+  }
+
+  if (snippet.userId !== userId) {
+    throw new AppError('Unauthorized', 403)
+  }
+
+  try {
+    // TODO: Read URL from env
+    const axiosRes = await axios.post('http://localhost:3001/eval', {
+      lang: snippet.lang,
+      code: snippet.code,
+    })
+    res.status(200).json(axiosRes.data)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: 'Error evaluating code snippet' })
+  }
 }
