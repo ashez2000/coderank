@@ -14,7 +14,7 @@ app.post('/eval', async (req, res) => {
 
   try {
     const output = await evalSnippet(lang, code)
-    res.send({ output })
+    res.status(200).json(output)
   } catch (err) {
     console.log(err)
     res.status(500).send('Internal Server Error')

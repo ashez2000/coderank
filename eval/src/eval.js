@@ -28,7 +28,7 @@ export const evalSnippet = async (lang, code) => {
   const container = await docker.createContainer(containerConfig)
   await container.start()
 
-  return new Promise((resolve, reject) => {
+  let output = new Promise((resolve, reject) => {
     container.logs(
       { follow: true, stdout: true, stderr: true },
       (err, stream) => {
@@ -47,4 +47,10 @@ export const evalSnippet = async (lang, code) => {
       }
     )
   })
+
+  output = await output
+
+  const exitCode = await container.inspect().then((data) => data.State.ExitCode)
+
+  return { output, exitCode }
 }
