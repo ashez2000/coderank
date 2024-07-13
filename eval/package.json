@@ -6,6 +6,8 @@
     "start": "node ./src/main.js"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "dockerode": "^4.0.2",
+    "express": "^4.19.2",
+    "uuid": "^10.0.0"
   }
 }
