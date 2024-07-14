@@ -8,20 +8,35 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
 
-  snippets Snippet[]
+  snippets    Snippet[]
+  submissions Submission[]
 }
 
 model Snippet {
-  id     String @id @default(uuid())
-  name   String
-  lang   String
-  code   String
-  userId String
+  id        String   @id @default(uuid())
+  name      String
+  lang      String
+  code      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  submissions Submission[]
+}
+
+model Submission {
+  id        String   @id @default(uuid())
+  output    String
+  exitCode  Int
+  snippet   Snippet  @relation(fields: [snippetId], references: [id])
+  snippetId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
 }

@@ -66,6 +66,36 @@ export const findById = async (req, res) => {
 }
 
 /**
+ * Get snippet by Id
+ * @route GET /api/snippets/:id/submissions
+ */
+export const findSubmissionsById = async (req, res) => {
+  const curUserId = req.user.id
+
+  const snippet = await db.snippet.findUnique({
+    where: {
+      id: req.params.id,
+    },
+  })
+
+  if (!snippet) {
+    return res.status(404).json({ message: 'Snippet Not Found' })
+  }
+
+  if (snippet.userId !== curUserId) {
+    return res.status(401).json({ message: 'Unauthorized' })
+  }
+
+  const submissions = await db.submission.findMany({
+    where: {
+      snippetId: req.params.id,
+    },
+  })
+
+  res.status(200).json(submissions)
+}
+
+/**
  * Remove snippet
  * @route DELETE /api/snippets/:id
  */
@@ -94,7 +124,7 @@ export const remove = async (req, res) => {
 }
 
 /**
- * Evaluate snippet
+ * Evaluates snippet and create new submission
  * @route POST /api/snippets/:id
  */
 export const evalSnippet = async (req, res) => {
@@ -116,7 +146,18 @@ export const evalSnippet = async (req, res) => {
       code: snippet.code,
     })
 
-    res.status(200).json(data)
+    const output = JSON.stringify(data.output)
+
+    const submission = await db.submission.create({
+      data: {
+        output,
+        exitCode: data.exitCode,
+        snippetId: snippetId,
+        userId: userId,
+      },
+    })
+
+    res.status(200).json(submission)
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: 'Error evaluating code snippet' })
