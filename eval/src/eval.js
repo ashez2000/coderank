@@ -1,31 +1,23 @@
 import fs from 'node:fs'
-import { v4 as uuid } from 'uuid'
 import Docker from 'dockerode'
+
+import { getConfig } from './evaluator/docker-configs.js'
+import { randomId } from './utils.js'
 
 const docker = new Docker({ socketPath: '/var/run/docker.sock' })
 
 export const evalSnippet = async (lang, code) => {
-  const id = uuid()
-    .split('')
-    .filter((i) => i !== '-')
-    .join('')
+  const codeDir = 'code_eval_' + randomId()
+  const codePath = codeDir + '/main.' + lang
 
-  const codePath = 'code_eval_' + id
-  fs.mkdirSync(codePath)
-  fs.writeFileSync(codePath + '/main.' + lang, code)
+  // Creating temp codedir for evaluation
+  fs.mkdirSync(codeDir)
+  fs.writeFileSync(codePath, code)
 
-  const containerConfig = {
-    Image: 'python:3.9-slim',
-    Cmd: ['python3', `/code/main.py`],
-    AttachStdout: true,
-    AttachStderr: true,
-    HostConfig: {
-      AutoRemove: true,
-      Binds: [`${process.cwd()}/${codePath}:/code`],
-    },
-  }
-
+  // Createing and evaluation code in docker container
+  const containerConfig = getConfig(lang, [`${process.cwd()}/${codeDir}:/code`])
   const container = await docker.createContainer(containerConfig)
+
   await container.start()
 
   let output = new Promise((resolve, reject) => {
