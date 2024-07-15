@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import * as env from '../config/env.js'
 import db from '../utils/prisma.js'
+import { snippetCreateSchema } from '../schemas/snippet.js'
 
 /**
  * Create new snippet
@@ -10,8 +11,7 @@ import db from '../utils/prisma.js'
 export const create = async (req, res) => {
   const curUserId = req.user.id
 
-  // TODO: data validatation
-  const { name, lang, code } = req.body
+  const { name, lang, code } = snippetCreateSchema.parse(req.body)
 
   const snippet = await db.snippet.create({
     data: {
