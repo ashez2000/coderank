@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  main-server:
+    build: ./server
+    ports:
+      - "3000:3000"
+    depends_on:
+      - code-evaluator
+      - postgres
+    env_file:
+      - ./server/.env
+    environment:
+      - DATABASE_URL=postgres://postgres:password@postgres:5432/mydatabase
+      - EVAL_URL=http://code-evaluator:3001
+
+  code-evaluator:
+    build: ./eval
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./code-evaluator/code:/usr/src/app/code
+    environment:
+      - NODE_ENV=production
+
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

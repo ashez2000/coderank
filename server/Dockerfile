@@ -9,6 +9,4 @@ RUN npm install
 COPY ./src ./src
 COPY ./prisma ./prisma
 
-RUN npm run db:push
-
 CMD [ "npm", "start" ]
