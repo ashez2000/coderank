@@ -10,6 +10,6 @@ router.get('/', snippet.find)
 router.post('/', snippet.create)
 router.get('/:id', snippet.findById)
 router.delete('/:id', snippet.remove)
-router.post('/:id', snippet.evalSnippet)
+router.post('/:id/eval', snippet.evalSnippet)
 
 export default router

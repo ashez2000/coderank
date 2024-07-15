@@ -18,8 +18,6 @@ services:
     build: ./eval
     ports:
       - "3001:3001"
-    volumes:
-      - ./code-evaluator/code:/usr/src/app/code
     environment:
       - NODE_ENV=production
 
