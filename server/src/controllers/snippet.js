@@ -3,6 +3,7 @@ import axios from 'axios'
 import * as env from '../config/env.js'
 import db from '../utils/prisma.js'
 import { snippetCreateSchema } from '../schemas/snippet.js'
+import { AppError } from '../utils/app-error.js'
 
 /**
  * Create new snippet
@@ -19,6 +20,38 @@ export const create = async (req, res) => {
       lang,
       code,
       userId: curUserId,
+    },
+  })
+
+  res.status(201).json(snippet)
+}
+
+/**
+ * Update snippet
+ * @route PUT /api/snippets/:id
+ */
+export const update = async (req, res) => {
+  const curUserId = req.user.id
+  const { name, lang, code } = snippetCreateSchema.parse(req.body)
+
+  let snippet = await db.snippet.findUnique({
+    where: { id: req.params.id },
+  })
+
+  if (!snippet) {
+    throw new AppError('Snippet not found')
+  }
+
+  if (snippet.userId !== curUserId) {
+    throw new AppError('Unauthorized')
+  }
+
+  snippet = await db.snippet.update({
+    where: { id: req.params.id },
+    data: {
+      name,
+      lang,
+      code,
     },
   })
 

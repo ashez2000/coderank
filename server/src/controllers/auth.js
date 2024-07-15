@@ -11,6 +11,10 @@ const signToken = (id, role) => {
   })
 }
 
+/**
+ * Register new user
+ * @route POST /api/auth/register
+ */
 export const register = async (req, res) => {
   const { name, email, password } = registerSchema.parse(req.body)
   const hash = bcrypt.hashSync(password)
@@ -33,6 +37,10 @@ export const register = async (req, res) => {
   res.status(201).json({ token })
 }
 
+/**
+ * Login user
+ * @route POST /api/auth/login
+ */
 export const login = async (req, res) => {
   const { email, password } = loginSchema.parse(req.body)
 

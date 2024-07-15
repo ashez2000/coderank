@@ -9,6 +9,7 @@ router.use(authenticate)
 router.get('/', snippet.find)
 router.post('/', snippet.create)
 router.get('/:id', snippet.findById)
+router.put('/:id', snippet.update)
 router.delete('/:id', snippet.remove)
 router.post('/:id/eval', snippet.evalSnippet)
 
